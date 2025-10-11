@@ -5,13 +5,13 @@ defmodule TestHelpers do
 
   @router_opts Router.init([])
 
-  @doc "Crée une connexion HTTP de test avec les headers nécessaires"
+  @doc "Creates a test HTTP connection with necessary headers"
   def http_conn(method, path, body \\ %{}) do
     conn(method, path, body)
     |> put_req_header("content-type", "application/json")
   end
 
-  @doc "Exécute une requête et retourne le body parsé en JSON"
+  @doc "Executes a request and returns the parsed JSON body"
   def execute_and_parse(conn) do
     conn = Router.call(conn, @router_opts)
     body = case conn.resp_body do
@@ -19,37 +19,37 @@ defmodule TestHelpers do
       body_str ->
         case Jason.decode(body_str) do
           {:ok, decoded} -> decoded
-          {:error, _} -> nil  # Si ce n'est pas du JSON (comme "Invalid Signature"), retourner nil
+          {:error, _} -> nil  # If it's not JSON (like "Invalid Signature"), return nil
         end
     end
     {conn, body}
   end
 
-  @doc "Exécute une requête POST et retourne la connexion et le body parsé"
+  @doc "Executes a POST request and returns the connection and parsed body"
   def post_and_parse(path, payload) do
     http_conn(:post, path, payload)
     |> execute_and_parse()
   end
 
-  @doc "Appel HTTP encrypt via le router"
+  @doc "HTTP encrypt call via the router"
   def http_encrypt(payload) do
     {conn, body} = post_and_parse("/encrypt", payload)
     {conn.status, body}
   end
 
-  @doc "Appel HTTP decrypt via le router"
+  @doc "HTTP decrypt call via the router"
   def http_decrypt(payload) do
     {conn, body} = post_and_parse("/decrypt", payload)
     {conn.status, body}
   end
 
-  @doc "Appel HTTP sign via le router"
+  @doc "HTTP sign call via the router"
   def http_sign(payload) do
     {conn, body} = post_and_parse("/sign", payload)
     {conn.status, body}
   end
 
-  @doc "Appel HTTP verify via le router"
+  @doc "HTTP verify call via the router"
   def http_verify(signature, data) do
     payload = %{"signature" => signature, "data" => data}
     {conn, _body} = post_and_parse("/verify", payload)
@@ -70,7 +70,7 @@ defmodule TestHelpers do
     {status, signed["signature"]}
   end
 
-  @doc "Cas de test simples pour les payloads"
+  @doc "Simple test cases for payloads"
   def simple_payloads do
     [
       %{},
@@ -81,7 +81,7 @@ defmodule TestHelpers do
     ]
   end
 
-  @doc "Cas de test complexes pour les payloads"
+  @doc "Complex test cases for payloads"
   def complex_payloads do
     [
       %{"nested" => %{"data" => "value"}},
@@ -97,12 +97,12 @@ defmodule TestHelpers do
     ]
   end
 
-  @doc "Tous les cas de test pour les payloads"
+  @doc "All test cases for payloads"
   def all_payloads do
     simple_payloads() ++ complex_payloads()
   end
 
-  @doc "Payload très complexe pour les tests d'intégration"
+  @doc "Very complex payload for integration tests"
   def very_complex_payload do
     %{
       "user" => %{
