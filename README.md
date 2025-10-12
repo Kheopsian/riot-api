@@ -2,6 +2,8 @@
 
 An Elixir API for data encryption and verification using HMAC-SHA256.
 
+The API is publicly available at https://riot-api.kheopsian.com
+
 ## Features
 
 This API provides REST endpoints for:
@@ -39,6 +41,8 @@ mix run --no-halt
 ```
 
 The server starts on port 4000.
+
+The API is publicly available at https://riot-api.kheopsian.com
 
 ## API Endpoints
 
