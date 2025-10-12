@@ -25,20 +25,19 @@ COPY . .
 RUN MIX_ENV=prod mix compile && \
     MIX_ENV=prod mix release
 
-# Stage 2: Runtime - Alpine minimal
-FROM alpine:3.21
+# Stage 2: Runtime - Debian slim (compatible avec le binaire Erlang)
+FROM debian:bookworm-slim
 
-# Install only runtime dependencies (no OpenSSL with CVE-2025-9230)
-RUN apk add --no-cache \
-    erlang \
-    erlang-dev \
-    ncurses-libs
+# Install only runtime dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ca-certificates \
+    libncurses6 && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 # Copy the release from builder
 COPY --from=builder /app/_build/prod/rel/riot_api ./
-
-EXPOSE 4000
 
 CMD ["./bin/riot_api", "start"]
