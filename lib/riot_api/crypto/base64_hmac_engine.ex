@@ -1,4 +1,12 @@
 defmodule RiotApi.Crypto.Base64HmacEngine do
+  @moduledoc """
+  Default crypto engine implementation using Base64 encoding and HMAC-SHA256.
+
+  This engine encrypts individual values by JSON-encoding them and then base64-encoding.
+  Decryption reverses the process. Signing creates a canonical JSON representation of maps
+  and generates an HMAC-SHA256 signature. Verification compares signatures securely.
+  """
+
   @behaviour RiotApi.Crypto.Engine
 
   @hmac_secret "super-secret-key"

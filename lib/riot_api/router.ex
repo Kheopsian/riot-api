@@ -1,4 +1,14 @@
 defmodule RiotApi.Router do
+  @moduledoc """
+  HTTP router for the Riot API crypto endpoints.
+
+  This module defines the following endpoints:
+  - POST /encrypt: Encrypts the payload values
+  - POST /decrypt: Decrypts the payload values
+  - POST /sign: Signs the payload and returns the signature
+  - POST /verify: Verifies the payload signature (returns 204 on success, 400 on failure)
+  """
+
   use Plug.Router
   alias RiotApi.Crypto
 
