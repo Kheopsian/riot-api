@@ -2,45 +2,175 @@
 
 An Elixir API for data encryption and verification using HMAC-SHA256.
 
-## Installation
+## Features
 
-If available on Hex, the package can be installed by adding `riot_api` to your list of dependencies in `mix.exs`:
+This API provides REST endpoints for:
+- **Encryption**: Base64 encoding of data
+- **Decryption**: Decoding of encoded data
+- **Signing**: HMAC-SHA256 signature generation
+- **Verification**: Signature validation
+
+## Installation and Configuration
+
+### Dependencies
 
 ```elixir
 def deps do
   [
-    {:riot_api, "~> 0.1.0"}
+    {:plug_cowboy, "~> 2.7"},
+    {:jason, "~> 1.4"},
+    {:plug_crypto, "~> 2.1"}
   ]
 end
 ```
 
-## Elixir Formatter
+### Environment Variables
 
-This project uses the Elixir formatter to maintain consistent code style. The `.formatter.exs` configuration file defines which files to format.
+- `HMAC_SECRET`: Secret key for HMAC (optional, default: "super-secret-key")
 
-### Usage
-
-To format all project files:
+## Getting Started
 
 ```bash
-mix format
+# Install dependencies
+mix deps.get
+
+# Start the server
+mix run --no-halt
 ```
 
-To check if files are properly formatted (without modifying them):
+The server starts on port 4000.
+
+## API Endpoints
+
+### POST /encrypt
+
+Encrypts payload data using Base64 encoding.
+
+**Requête :**
+```json
+{
+  "key1": "value1",
+  "key2": "value2"
+}
+```
+
+**Réponse :**
+```json
+{
+  "key1": "dmFsdWUx",  // Base64 encoded
+  "key2": "dmFsdWUy"
+}
+```
+
+### POST /decrypt
+
+Decrypts Base64 encoded data.
+
+**Requête :**
+```json
+{
+  "key1": "dmFsdWUx",
+  "key2": "dmFsdWUy"
+}
+```
+
+**Réponse :**
+```json
+{
+  "key1": "value1",
+  "key2": "value2"
+}
+```
+
+### POST /sign
+
+Generates an HMAC-SHA256 signature for the data.
+
+**Requête :**
+```json
+{
+  "key1": "value1",
+  "key2": "value2"
+}
+```
+
+**Réponse :**
+```json
+{
+  "signature": "a1b2c3d4e5f6..."
+}
+```
+
+### POST /verify
+
+Verifies the signature of the data.
+
+**Requête :**
+```json
+{
+  "signature": "a1b2c3d4e5f6...",
+  "data": {
+    "key1": "value1",
+    "key2": "value2"
+  }
+}
+```
+
+**Response:**
+- `204 No Content`: Valid signature
+- `400 Bad Request`: Invalid signature
+
+## Architecture
+
+The project uses a modular architecture with:
+
+- **`RiotApi.Router`**: HTTP route handling
+- **`RiotApi.Crypto`**: Main interface for crypto operations
+- **`RiotApi.Crypto.Engine`**: Behaviour for encryption engines
+- **`RiotApi.Crypto.Base64HmacEngine`**: Concrete implementation using Base64 and HMAC-SHA256
+
+## Tests
 
 ```bash
+mix test
+```
+
+## Docker
+
+### Build the Image
+
+```bash
+docker-compose build
+```
+
+### Run the Container
+
+```bash
+docker-compose up
+```
+
+### CI/CD Pipeline
+
+The project includes a GitHub Actions pipeline that:
+1. Runs tests
+2. Builds the Docker image
+3. Publishes it to GitHub Container Registry (available at `ghcr.io/kheopsian/riot-api:latest`)
+
+## Code Formatting
+
+```bash
+# Format code
+mix format
+
+# Check formatting
 mix format --check-formatted
 ```
 
-### Configuration
-
-The formatter is configured to format:
-- `.exs` files in the root directory (mix.exs, .formatter.exs)
-- All `.ex` and `.exs` files in the `config/`, `lib/`, and `test/` directories
-
 ## Documentation
 
-The documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/riot_api>.
+Generate documentation with ExDoc:
+
+```bash
+mix docs
+```
 
