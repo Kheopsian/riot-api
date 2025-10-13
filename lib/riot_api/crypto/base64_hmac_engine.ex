@@ -9,8 +9,6 @@ defmodule RiotApi.Crypto.Base64HmacEngine do
 
   @behaviour RiotApi.Crypto.Engine
 
-  @hmac_secret Application.compile_env(:riot_api, :hmac_secret, "super-secret-key")
-
   @impl RiotApi.Crypto.Engine
   def encrypt(value) do
     value
@@ -40,7 +38,7 @@ defmodule RiotApi.Crypto.Base64HmacEngine do
     canonical_string = canonical_map |> Jason.encode!()
 
     signature =
-      :crypto.mac(:hmac, :sha256, @hmac_secret, canonical_string)
+      :crypto.mac(:hmac, :sha256, Application.get_env(:riot_api, :hmac_secret), canonical_string)
       |> Base.encode16(case: :lower)
 
     signature
