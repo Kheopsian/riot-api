@@ -9,7 +9,7 @@ defmodule RiotApi.Crypto.Base64HmacEngine do
 
   @behaviour RiotApi.Crypto.Engine
 
-  @hmac_secret "super-secret-key"
+  @hmac_secret Application.compile_env(:riot_api, :hmac_secret, "super-secret-key")
 
   @impl RiotApi.Crypto.Engine
   def encrypt(value) do
