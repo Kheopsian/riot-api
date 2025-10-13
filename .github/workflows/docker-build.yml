@@ -44,4 +44,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/kheopsian/riot-api:latest
+          tags: ghcr.io/${{ github.repository }}:latest
