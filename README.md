@@ -61,7 +61,7 @@ Encrypts payload data using Base64 encoding.
 **Réponse :**
 ```json
 {
-  "key1": "dmFsdWUx",  // Base64 encoded
+  "key1": "dmFsdWUx",
   "key2": "dmFsdWUy"
 }
 ```
